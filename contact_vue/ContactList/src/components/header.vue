@@ -6,7 +6,7 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item href="new" title="New Contact">
+        <b-nav-item href="/new" title="New Contact">
           <font-awesome-icon icon="user-plus" class="icon" />
         </b-nav-item>
 
