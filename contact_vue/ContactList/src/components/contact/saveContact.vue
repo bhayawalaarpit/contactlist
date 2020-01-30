@@ -405,7 +405,6 @@ export default {
   methods: {
     onSubmit() {
       this.$store.dispatch("saveContact", this.$data);
-      this.$router.push({ name: "ListContact" });
     },
     handleFile({ target }) {
       const { files } = target;

@@ -1,8 +1,13 @@
 <template>
   <b-container>
-    <div class="card">
-      <b-form class="card-body" @submit.prevent="onSubmit">
-        <div class="h4 text-center mb-4 ">{{ contact.title }}</div>
+    <div class="card" v-if="!$store.getters.loader">
+      <b-form class="card-body">
+        <div class="h2">
+          {{ contact.title }}
+          <a v-bind:href="'mailto:' + contact.email" class="float-right">
+            <font-awesome-icon icon="envelope" />
+          </a>
+        </div>
         <hr />
         <div class="d-flex flex-column justify-content-center mb-4">
           <div class="form-group m-auto">
@@ -375,6 +380,7 @@
         </b-form-group>
       </b-form>
     </div>
+    <font-awesome-icon v-else icon="spinner" class="spiner fa-spin" />
     <!-- /form -->
   </b-container>
 </template>
@@ -418,25 +424,33 @@ export default {
       editMode: false
     };
   },
-  created() {
-    this.$store.dispatch("getContactDetails", this.id);
-    setTimeout(() => {
-      this.contact = this.$store.getters.contact;
-      if (this.contact.birthdate) {
-        this.contact.birthdate = moment(this.contact.birthdate).format(
-          "YYYY-MM-DD"
-        );
-      }
-
-      if (
-        this.contact.avatar &&
-        ![null, undefined, ""].includes(this.contact.avatar.trim())
-      ) {
+  beforeUpdate() {
+    this.contact = this.$store.getters.contact;
+    if (
+      this.contact.birthdate &&
+      ![null, undefined, ""].includes(this.contact.birthdate.trim())
+    ) {
+      this.contact.birthdate = moment(this.contact.birthdate).format(
+        "YYYY-MM-DD"
+      );
+    }
+    if (
+      this.contact.avatar &&
+      ![null, undefined, ""].includes(this.contact.avatar.trim())
+    ) {
+      try {
         document.querySelector(`#file-viewer`).style[
           "background-image"
-        ] = `url(${this.contact.avatar})`;
-      }
-    }, 3000);
+        ] = `url(${
+          this.contact.avatar
+            ? this.contact.avatar
+            : "https://icon-library.net/images/windows-8-user-icon/windows-8-user-icon-10.jpg"
+        })`;
+      } catch (error) {}
+    }
+  },
+  created() {
+    this.$store.dispatch("getContactDetails", this.id);
   },
   validations: {
     contact: {
@@ -461,12 +475,10 @@ export default {
   methods: {
     onUpdateContact() {
       if (this.editMode === false) return void (this.editMode = true);
-      console.log("Data", this.contact);
       this.$store.dispatch("updateContactDetalis", this.contact);
-      // this.$store.dispatch("getAllContact");
+      this.$store.dispatch("getAllContact");
       setTimeout(() => {
         this.contactList = groupByName(this.$store.getters.contacts);
-        this.$router.push({ name: "ListContact" });
       }, 100);
     },
     onDeleteContact() {
@@ -490,8 +502,6 @@ export default {
           } else {
             console.log("canceled");
           }
-
-          // this.boxTwo = value
         })
         .catch(err => {
           console.log("canceled");
@@ -577,5 +587,13 @@ export default {
   text-align: center;
   background: var(--secondary);
   z-index: 1;
+}
+.spiner {
+  height: 150px;
+  width: 150px;
+  position: fixed;
+  left: 50%;
+  right: 50%;
+  top: 35%;
 }
 </style>

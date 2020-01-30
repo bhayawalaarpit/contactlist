@@ -9,7 +9,6 @@
         <b-nav-item href="/new" title="New Contact">
           <font-awesome-icon icon="user-plus" class="icon" />
         </b-nav-item>
-
         <b-nav-item href="/" title="All Contact">
           <font-awesome-icon icon="address-book" class="icon" />
         </b-nav-item>

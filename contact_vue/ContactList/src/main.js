@@ -14,13 +14,24 @@ import {
   faUserPlus,
   faUserEdit,
   faTrashAlt,
-  faUser
+  faUser,
+  faSpinner,
+  faEnvelope
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import BootstrapVue from "bootstrap-vue";
 import { NavbarPlugin } from "bootstrap-vue";
 
-library.add(faPlus, faMinus, faAddressBook, faUserPlus, faUserEdit, faTrashAlt);
+library.add(
+  faPlus,
+  faMinus,
+  faAddressBook,
+  faUserPlus,
+  faUserEdit,
+  faTrashAlt,
+  faSpinner,
+  faEnvelope
+);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.use(BootstrapVue);

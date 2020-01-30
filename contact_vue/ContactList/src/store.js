@@ -6,59 +6,66 @@ import router from "./router";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: { contactDetails: null, contacts: null, contactId: null },
+  state: {
+    contactDetails: null,
+    contacts: null,
+    contactId: null,
+    loader: false
+  },
   mutations: {},
   actions: {
     // Save Contact
-
     saveContact: ({ commit, dispatch }, formData) => {
       return axios
         .post("/contact/save", formData)
         .then(res => {
-          console.info({ SaveContact: res });
+          router.push({ name: "ListContact" });
         })
         .catch(err => {
-          console.warn({ SaveError: err });
+          console.warn("SaveError:", err.response.data);
         });
     },
 
     getAllContact: ({ commit, state }) => {
+      state.loader = true;
       return axios
         .get("/contact")
         .then(res => {
+          state.loader = false;
           state.contacts = res.data;
-          // console.info({ getAllContactRes: state.contacts });
         })
-        .catch(err => console.warn({ getAllContactErr: err }));
+        .catch(err => {
+          state.loader = false;
+          console.warn("getAllContactErr", err);
+        });
     },
 
     getContactDetails: ({ commit, state }, id) => {
+      state.loader = true;
       return axios
         .get(`/contact/${id}`)
         .then(res => {
           state.contactDetails = res.data;
           state.contactId = id;
+          state.loader = false;
         })
         .catch(err => {
-          console.warn({ GetContactDetailsErr: err });
+          state.loader = false;
+          console.warn("GetContactDetailsErr", err);
         });
     },
 
     updateContactDetalis: ({ commit, state }, formData) => {
-      return (
-        axios
-          .put(`/contact/edit/${state.contactId}`, formData)
-          // .then(res => console.info({ updateContactDetalisres: res }))
-          .catch(err => console.warn({ updateContactDetaliserr: err }))
-      );
+      return axios
+        .put(`/contact/edit/${state.contactId}`, formData)
+        .then(res => router.push({ name: "ListContact" }))
+        .catch(err => console.warn({ updateContactDetaliserr: err }));
     },
     deleteContact: ({ commit, state }) => {
-      return (
-        axios
-          .delete(`/contact/delete/${state.contactId}`)
-          // .then(res => console.info({ DeleteContactData: res }))
-          .catch(err => console.warn({ DeleteContactErr: err }))
-      );
+      return axios
+        .delete(`/contact/delete/${state.contactId}`)
+        .then(res => router.push({ name: "ListContact" }))
+        .catch(err => console.warn({ DeleteContactErr: err }));
     },
 
     cleanupState: ({ commit, state }) => {
@@ -68,7 +75,7 @@ export default new Vuex.Store({
   },
   getters: {
     contacts: state => state.contacts,
-
-    contact: state => state.contactDetails
+    contact: state => state.contactDetails,
+    loader: state => state.loader
   }
 });
