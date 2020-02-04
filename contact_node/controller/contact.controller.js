@@ -51,7 +51,8 @@ exports.updateContact = async (req, res) => {
   try {
     const _id = req.params.id;
     const contactUpdated = await Contact.findByIdAndUpdate(_id, {
-      ...req.body
+      ...req.body,
+      title: `${req.body.firstname} ${req.body.lastname}`
     });
 
     if (!contactUpdated) {
